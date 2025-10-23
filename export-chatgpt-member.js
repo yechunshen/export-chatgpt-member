@@ -138,7 +138,7 @@ try{
 
       const tb=getTbody(); const prevHTML=tb?tb.innerHTML:'';
       if(!clickButton(next)){
-        alert('Can't click the next page button，you need to check the xpath attribute in the code');
+        alert('Cannot click the next page button，you need to check the xpath attribute in the code');
         return;
       }
       waitTbodyChanged(prevHTML,function(){
