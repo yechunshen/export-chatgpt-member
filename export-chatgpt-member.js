@@ -95,7 +95,7 @@ function parsePage(){
 
 /*** =============== Main Flow =============== ***/
 try{
-  if(!getTable()) return alert('can't find user list, please make sure the user list is loaded');
+  if(!getTable()) return alert('cannot find user list, please make sure the user list is loaded');
 
   const seen=new Set(), all=[];
   function pushDedup(arr){ arr.forEach(r=>{ if(!seen.has(r.email)){ seen.add(r.email); all.push(r); } }); }
