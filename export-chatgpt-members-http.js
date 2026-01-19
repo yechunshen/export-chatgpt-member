@@ -6,14 +6,22 @@
   const LIMIT = 25;
   const QUERY = ""; // keep empty for all users
 
-  // IMPORTANT: paste your Bearer token locally, do not share it
-  const AUTH_TOKEN = "PASTE_YOUR_BEARER_TOKEN_HERE";
+  // Paste token here (multi-line is OK). The code will remove all whitespace.
+  const AUTH_TOKEN_RAW = `
+PASTE_YOUR_BEARER_TOKEN_HERE
+`;
+
+  // Remove spaces/newlines/tabs to avoid syntax errors and invalid tokens
+  const AUTH_TOKEN = String(AUTH_TOKEN_RAW).replace(/\s+/g, "").trim();
+  if (!AUTH_TOKEN || AUTH_TOKEN === "PASTE_YOUR_BEARER_TOKEN_HERE") {
+    throw new Error("AUTH_TOKEN is empty. Paste your Bearer token into AUTH_TOKEN_RAW.");
+  }
 
   // Minimal headers (keep required ones)
   const COMMON_HEADERS = {
-    "accept": "*/*",
-    "authorization": `Bearer ${AUTH_TOKEN}`,
-    "chatgpt-account-id": ACCOUNT_ID
+    accept: "*/*",
+    authorization: `Bearer ${AUTH_TOKEN}`,
+    "chatgpt-account-id": ACCOUNT_ID,
   };
 
   // ====== Helpers ======
@@ -46,10 +54,18 @@
 
   function normalizeUser(u) {
     const email = pick(u, ["email", "user_email", "primary_email", "username"]);
-    const addedRaw = pick(u, ["added_on", "added_at", "date_added", "created_at", "createdAt", "joined_at", "joinedAt"]);
+    const addedRaw = pick(u, [
+      "added_on",
+      "added_at",
+      "date_added",
+      "created_at",
+      "createdAt",
+      "joined_at",
+      "joinedAt",
+    ]);
     return {
       email: (email || "").toString().toLowerCase(),
-      added_on: toISODate(addedRaw)
+      added_on: toISODate(addedRaw),
     };
   }
 
@@ -59,12 +75,16 @@
       method: "GET",
       headers: COMMON_HEADERS,
       credentials: "include",
-      mode: "cors"
+      mode: "cors",
     });
+
     if (!res.ok) {
       const text = await res.text().catch(() => "");
-      throw new Error(`HTTP ${res.status} ${res.statusText} offset=${offset} body=${text.slice(0, 200)}`);
+      throw new Error(
+        `HTTP ${res.status} ${res.statusText} offset=${offset} body=${text.slice(0, 500)}`
+      );
     }
+
     return res.json();
   }
 
