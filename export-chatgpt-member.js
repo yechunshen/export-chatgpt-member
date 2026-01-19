@@ -1,3 +1,4 @@
+##invalid
 javascript:(function(){
 /*** =============== Utils =============== ***/
 function toISO(s){try{const d=new Date((s||'').trim());if(!isNaN(d))return d.toISOString().slice(0,10);return (s||'').trim()}catch{return (s||'').trim()}}
